@@ -11,6 +11,10 @@ android {
         applicationId = "com.chonkies.app"
         minSdk = 26
         targetSdk = 35
+        versionCode = 1
+        versionName = "1.0.0"
+        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:4242\"")
+    }
 compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -18,10 +22,6 @@ compileOptions {
 kotlinOptions {
     jvmTarget = "17"
 }
-        versionCode = 1
-        versionName = "1.0.0"
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:4242\"")
-    }
     buildFeatures { compose = true; buildConfig = true }
 }
 
