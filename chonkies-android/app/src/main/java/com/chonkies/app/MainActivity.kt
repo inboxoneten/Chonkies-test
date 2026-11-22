@@ -1,5 +1,7 @@
 package com.chonkies.app
-
+import androidx.compose.animation.core.*
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.delay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +48,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
-        setContent { ChonkiesApp(onPay = { cart, customer -> startPayment(cart, customer) }) }
+        setContent {
+    var showIntro by remember { mutableStateOf(true) }
+
+    if (showIntro) {
+        ChonkiesIntro(onFinished = { showIntro = false })
+    } else {
+        ChonkiesApp(onPay = { cart, customer ->
+            startPayment(cart, customer)
+        })
+    }
+}
     }
 
     private fun startPayment(cart: List<CartLine>, customer: Customer) {
@@ -98,6 +110,61 @@ private val products = listOf(
     Product("bubble-tea", "Bubble Tea", "Bubble Tea", "A refreshing favorite with boba.", 599, "🧋")
 )
 
+@Composable
+private fun ChonkiesIntro(onFinished: () -> Unit) {
+    var visibleLetters by remember { mutableIntStateOf(0) }
+    val letters = "CHONKIES"
+
+    LaunchedEffect(Unit) {
+        for (i in 1..letters.length) {
+            delay(120)
+            visibleLetters = i
+        }
+        delay(1300)
+        onFinished()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Ink),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(horizontalArrangement = Arrangement.Center) {
+                letters.forEachIndexed { index, letter ->
+                    val scale by animateFloatAsState(
+                        targetValue = if (index < visibleLetters) 1f else 0f,
+                        animationSpec = spring(
+                            dampingRatio = 0.45f,
+                            stiffness = 300f
+                        ),
+                        label = "letter"
+                    )
+                    Text(
+                        text = letter.toString(),
+                        color = if (index % 2 == 0) Orange else Gold,
+                        fontSize = 34.sp,
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                            translationY = (1f - scale) * 45f
+                        }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                "GETTING THE GOOD STUFF READY...",
+                color = Cream,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp
+            )
+        }
+    }
+}
 @Composable
 private fun ChonkiesApp(onPay: (List<CartLine>, Customer) -> Unit) {
     var selectedCategory by remember { mutableStateOf("All") }
