@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Chonkies" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:statusBarColor">#17130F</item>
+        <item name="android:navigationBarColor">#17130F</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
